@@ -14,19 +14,24 @@ Sistema web completo para la **gestión de ventas, control de inventario y regis
 ## 📸 Capturas de Pantalla
 
 ### 🔐 Pantalla de Inicio de Sesión
-![Login](screenshots/login.png)
+<img width="541" height="703" alt="image" src="https://github.com/user-attachments/assets/bc7c4ebf-23ad-4013-abf5-823c201898fd" />
+
 
 ### 🏠 Panel Principal (Dashboard)
-![Home](screenshots/home.png)
+<img width="1901" height="572" alt="image" src="https://github.com/user-attachments/assets/366a4666-6914-46bb-b2fd-b782ad814ea8" />
+
 
 ### 👥 Gestión de Clientes (CRUD)
-![Clientes](screenshots/clientes.png)
+<img width="1907" height="529" alt="image" src="https://github.com/user-attachments/assets/eb1d2341-8a10-4631-a947-a7e9aa513fc2" />
+
 
 ### 📦 Gestión de Productos (CRUD)
-![Productos](screenshots/productos.png)
+<img width="767" height="611" alt="image" src="https://github.com/user-attachments/assets/bb1d150e-5857-4e64-9a8d-6c4f7738a4d1" />
+
 
 ### 💰 Gestión de Ventas
-![Ventas](screenshots/ventas.png)
+<img width="766" height="591" alt="image" src="https://github.com/user-attachments/assets/c801f80d-d654-453e-9bbb-be33027d9164" />
+
 
 ---
 

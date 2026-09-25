@@ -14,22 +14,27 @@ Sistema web completo para la **gestión de ventas, control de inventario y regis
 ## 📸 Capturas de Pantalla
 
 ### 🔐 Pantalla de Inicio de Sesión
-![Login](screenshots/login.png)
+<img width="1919" height="984" alt="image" src="https://github.com/user-attachments/assets/3c5e0eaa-2580-42f8-bb05-842fa81b3c94" />
+
 
 ### 🏠 Panel Principal (Dashboard)
-![Home](screenshots/home.png)
+<img width="1865" height="960" alt="image" src="https://github.com/user-attachments/assets/e6417b47-66e8-4fbd-91fb-76ba044489c3" />
 
 ### 👥 Gestión de Clientes (CRUD)
-![Clientes](screenshots/clientes.png)
+<img width="1909" height="716" alt="image" src="https://github.com/user-attachments/assets/57a84d51-8c2e-4767-97f1-751bb8724750" />
+
 
 ### 📦 Gestión de Productos (CRUD)
-![Productos](screenshots/productos.png)
+<img width="1757" height="477" alt="image" src="https://github.com/user-attachments/assets/69683154-81ff-4c45-99c6-34eebf8f8cbe" />
+
 
 ### 💰 Gestión de Ventas
-![Ventas](screenshots/ventas.png)
+<img width="1770" height="481" alt="image" src="https://github.com/user-attachments/assets/5c755778-1e9a-43fb-a5ef-efc1a6708469" />
+
 
 ### 🌙 Modo Oscuro
-![Modo Oscuro](screenshots/modo-oscuro.png)
+<img width="1895" height="597" alt="image" src="https://github.com/user-attachments/assets/7907602a-9a98-4e58-bacd-5a7cca169c0e" />
+
 
 ---
 

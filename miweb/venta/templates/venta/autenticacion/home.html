@@ -376,6 +376,72 @@
         .overlay.active {
             display: block;
         }
+                /* ====== BOTÓN MODO OSCURO ====== */
+        .dark-mode-toggle {
+            background: transparent;
+            border: 2px solid #e0e0e0;
+            color: #333;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .dark-mode-toggle:hover {
+            background: rgba(33, 150, 243, 0.1);
+            border-color: #2196F3;
+        }
+
+        /* ====== MODO OSCURO GLOBAL ====== */
+                body.dark-mode {
+            background-color: #1a1d21 !important;
+            color: #e8eaed !important;
+        }
+        body.dark-mode .main-content {
+            background-color: #1a1d21 !important;
+        }
+        body.dark-mode .main-header {
+            background-color: #25292e !important;
+            border-bottom-color: #3a3f45 !important;
+        }
+        body.dark-mode .main-header h1 {
+            color: #e8eaed !important;
+        }
+        body.dark-mode .welcome-section {
+            background-color: #25292e !important;
+            color: #e8eaed !important;
+        }
+        body.dark-mode .welcome-section h2 {
+            color: #e8eaed !important;
+        }
+        body.dark-mode .welcome-section p {
+            color: #b0b3b8 !important;
+        }
+        body.dark-mode .gestion-section {
+            background-color: #25292e !important;
+        }
+        body.dark-mode .crud-menu {
+            background-color: #202428 !important;
+        }
+        body.dark-mode .crud-menu p {
+            color: #e8eaed !important;
+        }
+        body.dark-mode .access-denied {
+            background-color: #25292e !important;
+        }
+        body.dark-mode .access-denied p {
+            color: #b0b3b8 !important;
+        }
+        body.dark-mode .dark-mode-toggle {
+            border-color: #555;
+            color: #e8eaed;
+        }
+        body.dark-mode .dark-mode-toggle:hover {
+            background: rgba(33, 150, 243, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -439,10 +505,13 @@
             <header class="main-header">
                 <h1 id="main-title">Sistema de Gestión de Ventas</h1>
                 <div class="header-actions">
-                    <div class="user-badge">
-                        {{ user.username }}
-                    </div>
-                </div>
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()" id="darkModeBtn" title="Cambiar tema">
+        <span id="darkModeIcon">🌙</span>
+    </button>
+    <div class="user-badge">
+        {{ user.username }}
+    </div>
+</div>
             </header>
             
             <div class="content-area">
@@ -493,33 +562,32 @@
                 {% endif %}
                 
                 <!-- Sección de Gestión de Productos -->
-                {% if user_permissions.can_manage_products %}
-                <section id="productos-section" class="gestion-section">
-                    <div class="gestion-header">
-                        <h2>Gestión de Productos</h2>
-                    </div>
-                    <div class="crud-menu">
-                        <div class="crud-buttons">
-                            <a href="{% url 'crear_producto' %}" class="crud-btn crear">
-                                <span>➕</span>
-                                Crear
-                            </a>
-                            <a href="{% url 'lista_productos' %}" class="crud-btn consultar">
-                                <span>👁️</span>
-                                Consultar
-                            </a>
-                            <a href="{% url 'actualizar_producto' %}" class="crud-btn modificar">
-                                <span>✏️</span>
-                                Modificar
-                            </a>
-                            <a href="{% url 'borrar_producto' %}" class="crud-btn eliminar">
-                                <span>🗑️</span>
-                                Eliminar
-                            </a>
-                        </div>
-                    </div>
-                </section>
-                {% else %}
+               {% if user_permissions.can_manage_products %}
+<section id="productos-section" class="gestion-section">
+    <div class="gestion-header">
+        <h2>Gestión de Productos</h2>
+    </div>
+    <div class="crud-menu">
+        <div class="crud-buttons">
+            <a href="{% url 'crear_producto' %}" class="crud-btn crear">
+                <span>➕</span> Crear
+            </a>
+            <a href="{% url 'lista_productos' %}" class="crud-btn consultar">
+                <span>👁️</span> Consultar
+            </a>
+            <a href="{% url 'actualizar_producto' %}" class="crud-btn modificar">
+                <span>✏️</span> Modificar
+            </a>
+            <a href="{% url 'activar_desactivar_producto' %}" class="crud-btn" style="background: linear-gradient(135deg, #FF9800, #F57C00); color: white;">
+                <span>🔄</span> Activar/Desactivar
+            </a>
+            <a href="{% url 'borrar_producto' %}" class="crud-btn eliminar">
+                <span>🗑️</span> Eliminar
+            </a>
+        </div>
+    </div>
+</section>
+{% else %}
                 <section id="productos-section" class="access-denied" style="display: none;">
                     <h3>🚫 Acceso Denegado</h3>
                     <p>No tiene permisos para acceder a la gestión de productos.</p>
@@ -542,15 +610,13 @@
                                 <span>📊</span>
                                 Consultar Ventas 
                             </a>
-                       <a href="{% url 'lista_ventas_simples' %}" class="crud-btn modificar">
-                      <span>✏️</span>
-                             Modificar Venta 
-                            </a>
+                          <a href="{% url 'buscar_venta_modificar' %}" class="crud-btn modificar">
+    <span>✏️</span> Modificar Venta 
+</a>
 
-                            <a href="{% url 'lista_ventas_simples' %}" class="crud-btn eliminar">
-                                <span>🗑️</span>
-                                Eliminar Venta 
-                            </a>
+<a href="{% url 'buscar_venta_eliminar' %}" class="crud-btn eliminar">
+    <span>🗑️</span> Eliminar Venta 
+</a>
                         </div>
                     </div>
                 </section>
@@ -629,6 +695,43 @@
                 closeSidebar();
             }
         });
+
+        // ¡NUEVO! Detectar el hash en la URL para mostrar la sección correcta
+        window.addEventListener('DOMContentLoaded', function() {
+            const hash = window.location.hash.replace('#', '');
+            if (hash === 'clientes') {
+                // Simulamos el clic en el botón de Clientes
+                const btnClientes = document.querySelector('.menu-item[onclick*="clientes"]');
+                if (btnClientes) btnClientes.click();
+            } else if (hash === 'productos') {
+                const btnProductos = document.querySelector('.menu-item[onclick*="productos"]');
+                if (btnProductos) btnProductos.click();
+            } else if (hash === 'ventas') {
+                const btnVentas = document.querySelector('.menu-item[onclick*="ventas"]');
+                if (btnVentas) btnVentas.click();
+            }
+        });
+
+                // ========== MODO OSCURO ==========
+        function toggleDarkMode() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+
+            const isDark = body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+
+            // Actualizar el icono
+            document.getElementById('darkModeIcon').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        // Cargar preferencia al iniciar
+        (function() {
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'enabled') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeIcon').textContent = '☀️';
+            }
+        })();
     </script>
 </body>
 </html>

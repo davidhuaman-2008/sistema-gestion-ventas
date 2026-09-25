@@ -1,241 +1,165 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ titulo }}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e0e0e0;
-        }
-        .header-section h1 {
-            margin: 0;
-            color: #333;
-            font-size: 28px;
-        }
-        .btn-exit {
-            background-color: #9E9E9E;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-exit:hover {
-            background-color: #757575;
-        }
-        .table-container {
-            background: #fafafa;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .table-header {
-            background: linear-gradient(135deg, #2196F3, #1976D2);
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-        }
-        .table-header h2 {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        .table-content {
-            padding: 20px;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            background: white;
-            border-radius: 6px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        th {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            color: #495057;
-            font-weight: bold;
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 2px solid #dee2e6;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #dee2e6;
-            color: #495057;
-            transition: background-color 0.2s ease;
-        }
-        tr:hover {
-            background-color: #f8f9fa;
-        }
-        tr:nth-child(even) {
-            background-color: #fdfdfd;
-        }
-        tr:nth-child(even):hover {
-            background-color: #f1f3f4;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #6c757d;
-            font-style: italic;
-        }
-        .stats-section {
-            margin-top: 20px;
-            padding: 15px;
-            background: linear-gradient(135deg, #e8f5e8, #d4edda);
-            border-radius: 6px;
-            border-left: 4px solid #28a745;
-        }
-        .stats-text {
-            margin: 0;
-            color: #155724;
-            font-weight: 600;
-        }
-        .badge-active {
-            background-color: #4CAF50;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 12px;
-        }
-        .badge-inactive {
-            background-color: #f44336;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 12px;
-        }
-        .price-cell {
-            font-weight: bold;
-            color: #2e7d32;
-        }
-        
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                padding: 15px;
-            }
-            .header-section {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-            .header-section h1 {
-                font-size: 24px;
-            }
-            table {
-                font-size: 14px;
-            }
-            th, td {
-                padding: 8px 10px;
-            }
-            .table-content {
-                padding: 15px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .header-section h1 {
-                font-size: 20px;
-            }
-            th, td {
-                padding: 6px 8px;
-                font-size: 12px;
-            }
-            .btn-exit {
-                padding: 8px 15px;
-                font-size: 14px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header-section">
-            <h1>{{ titulo }}</h1>
-            <a href="/" class="btn-exit">Salir</a>
-        </div>
+{% extends 'venta/base.html' %}
 
-        <div class="table-container">
-            <div class="table-header">
-                <h2>📦 Productos del Sistema</h2>
-            </div>
-            <div class="table-content">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>🆔 Código</th>
-                            <th>📦 Producto</th>
-                            <th>💰 Precio</th>
-                            <th>📊 Stock</th>
-                            <th>📅 Vencimiento</th>
-                            <th>🔍 Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for producto in productos %}
-                        <tr>
-                            <td><strong>{{ producto.id_producto }}</strong></td>
-                            <td>{{ producto.nom_prod }}</td>
-                            <td class="price-cell">S/. {{ producto.precio }}</td>
-                            <td>{{ producto.cantidad }}</td>
-                            <td>{% if producto.fec_vencimiento %}{{ producto.fec_vencimiento|date:"d/m/Y" }}{% else %}--{% endif %}</td>
-                            <td>
-                                {% if producto.estado %}
-                                    <span class="badge-active">Activo</span>
-                                {% else %}
-                                    <span class="badge-inactive">Inactivo</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="6" class="empty-state">
-                                📭 No hay productos registrados en el sistema
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                
-                {% if productos %}
-                <div class="stats-section">
-                    <p class="stats-text">
-                        📊 Total de productos registrados: {{ productos|length }} | 
-                        ✅ Activos: {{ productos_activos }} | 
-                        ❌ Inactivos: {{ productos_inactivos }}
-                    </p>
-                </div>
-                {% endif %}
-            </div>
+{% block title %}Lista de Productos - Info Ventas{% endblock %}
+{% block page_title %}Gestión de Productos{% endblock %}
+
+{% block extra_css %}
+<style>
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+    .btn-back { background-color: #9E9E9E; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none; font-weight: bold; display: inline-block; }
+    .btn-back:hover { background-color: #757575; }
+    .btn-create { background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none; font-weight: bold; display: inline-block; }
+    .btn-create:hover { background-color: #45a049; }
+    .btn-excel { background-color: #217346; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none; font-weight: bold; display: inline-block; }
+    .btn-excel:hover { background-color: #1a5a37; }
+    .btn-pdf { background-color: #DC3545; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none; font-weight: bold; display: inline-block; }
+    .btn-pdf:hover { background-color: #b02a37; }
+    .table-container { background: #fafafa; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .table-header { background: linear-gradient(135deg, #2196F3, #1976D2); color: white; padding: 15px 20px; text-align: center; }
+    .table-header h2 { margin: 0; font-size: 18px; font-weight: 600; }
+    .table-content { padding: 20px; overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    th { background: linear-gradient(135deg, #f8f9fa, #e9ecef); color: #495057; font-weight: bold; padding: 12px 15px; text-align: left; border-bottom: 2px solid #dee2e6; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; user-select: none; }
+    th:hover { background: #e9ecef; }
+    th .sort-icon { float: right; color: #adb5bd; font-size: 12px; margin-left: 5px; }
+    th.sorted-asc .sort-icon { color: #4CAF50; }
+    th.sorted-desc .sort-icon { color: #F44336; }
+    td { padding: 12px 15px; border-bottom: 1px solid #dee2e6; color: #495057; }
+    tr:hover { background-color: #f8f9fa; }
+    tr:nth-child(even) { background-color: #fdfdfd; }
+    tr:nth-child(even):hover { background-color: #f1f3f4; }
+    .empty-state { text-align: center; padding: 40px 20px; color: #6c757d; font-style: italic; }
+    .stats-section { margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #e8f5e8, #d4edda); border-radius: 6px; border-left: 4px solid #28a745; }
+    .stats-text { margin: 0; color: #155724; font-weight: 600; }
+    .badge-active { background-color: #4CAF50; color: white; padding: 3px 8px; border-radius: 10px; font-size: 12px; }
+    .badge-inactive { background-color: #f44336; color: white; padding: 3px 8px; border-radius: 10px; font-size: 12px; }
+    .price-cell { font-weight: bold; color: #2e7d32; }
+    @media (max-width: 768px) {
+        .top-bar { flex-direction: column; align-items: stretch; }
+        .top-bar > div { display: flex; flex-direction: column; gap: 10px; }
+        .btn-back, .btn-create, .btn-excel, .btn-pdf { text-align: center; width: 100%; }
+        table { font-size: 14px; }
+        th, td { padding: 8px 10px; }
+        .table-content { padding: 15px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="top-bar">
+    <a href="{% url 'home' %}#productos" class="btn-back">← Volver al Menú de Productos</a>
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'exportar_productos_excel' %}" class="btn-excel">📊 Exportar Excel</a>
+        <a href="{% url 'exportar_productos_pdf' %}" class="btn-pdf">📄 Exportar PDF</a>
+        <a href="{% url 'crear_producto' %}" class="btn-create">➕ Nuevo Producto</a>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-header">
+        <h2>📦 Productos del Sistema</h2>
+    </div>
+    <div class="table-content">
+        <table id="tablaProductos">
+            <thead>
+                <tr>
+                    <th onclick="ordenarTabla(0, 'number')">🆔 Código <span class="sort-icon">↕</span></th>
+                    <th onclick="ordenarTabla(1, 'string')">📦 Producto <span class="sort-icon">↕</span></th>
+                    <th onclick="ordenarTabla(2, 'number')">💰 Precio <span class="sort-icon">↕</span></th>
+                    <th onclick="ordenarTabla(3, 'number')">📊 Stock <span class="sort-icon">↕</span></th>
+                    <th onclick="ordenarTabla(4, 'date')">📅 Vencimiento <span class="sort-icon">↕</span></th>
+                    <th onclick="ordenarTabla(5, 'string')">🔍 Estado <span class="sort-icon">↕</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <td data-value="{{ producto.id_producto }}"><strong>{{ producto.id_producto }}</strong></td>
+                    <td data-value="{{ producto.nom_prod }}">{{ producto.nom_prod }}</td>
+                    <td data-value="{{ producto.precio }}" class="price-cell">S/. {{ producto.precio }}</td>
+                    <td data-value="{{ producto.cantidad }}">{{ producto.cantidad }}</td>
+                    <td data-value="{% if producto.fec_vencimiento %}{{ producto.fec_vencimiento|date:'Y-m-d' }}{% endif %}">
+                        {% if producto.fec_vencimiento %}{{ producto.fec_vencimiento|date:"d/m/Y" }}{% else %}--{% endif %}
+                    </td>
+                    <td data-value="{% if producto.estado %}Activo{% else %}Inactivo{% endif %}">
+                        {% if producto.estado %}
+                            <span class="badge-active">Activo</span>
+                        {% else %}
+                            <span class="badge-inactive">Inactivo</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-state">📭 No hay productos registrados en el sistema</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="stats-section">
+            <p class="stats-text">
+                📊 Total de productos: {{ productos|length }} | 
+                ✅ Activos: {{ productos_activos }} | 
+                ❌ Inactivos: {{ productos_inactivos }}
+            </p>
         </div>
     </div>
-</body>
-</html>
+</div>
+
+{% block extra_js %}
+<script>
+    let ordenActual = { columna: -1, direccion: 'asc' };
+
+    function ordenarTabla(columna, tipo) {
+        const tabla = document.getElementById('tablaProductos');
+        const tbody = tabla.querySelector('tbody');
+        const filas = Array.from(tbody.querySelectorAll('tr'));
+
+        // Si hay filas vacías (empty-state), no ordenar
+        if (filas.length === 1 && filas[0].querySelector('.empty-state')) return;
+
+        // Cambiar dirección si es la misma columna
+        if (ordenActual.columna === columna) {
+            ordenActual.direccion = ordenActual.direccion === 'asc' ? 'desc' : 'asc';
+        } else {
+            ordenActual.columna = columna;
+            ordenActual.direccion = 'asc';
+        }
+
+        // Actualizar iconos de las cabeceras
+        const ths = tabla.querySelectorAll('th');
+        ths.forEach((th, i) => {
+            th.classList.remove('sorted-asc', 'sorted-desc');
+            const icon = th.querySelector('.sort-icon');
+            if (i === columna) {
+                th.classList.add(ordenActual.direccion === 'asc' ? 'sorted-asc' : 'sorted-desc');
+                icon.textContent = ordenActual.direccion === 'asc' ? '▲' : '▼';
+            } else {
+                icon.textContent = '↕';
+            }
+        });
+
+        // Ordenar filas
+        filas.sort((a, b) => {
+            const valA = a.children[columna].getAttribute('data-value') || a.children[columna].textContent.trim();
+            const valB = b.children[columna].getAttribute('data-value') || b.children[columna].textContent.trim();
+
+            let comparacion = 0;
+            if (tipo === 'number') {
+                comparacion = parseFloat(valA || 0) - parseFloat(valB || 0);
+            } else if (tipo === 'date') {
+                comparacion = (valA || '9999').localeCompare(valB || '9999');
+            } else {
+                comparacion = valA.toString().localeCompare(valB.toString());
+            }
+
+            return ordenActual.direccion === 'asc' ? comparacion : -comparacion;
+        });
+
+        // Reinsertar filas ordenadas
+        filas.forEach(fila => tbody.appendChild(fila));
+    }
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Info Ventas{% endblock %}</title>
+    <style>
+        /* ====== VARIABLES DE COLOR ====== */
+        :root {
+            --bg-body: #f5f5f5;
+            --bg-card: #ffffff;
+            --bg-header: #ffffff;
+            --bg-sidebar: linear-gradient(135deg, #2196F3, #1976D2);
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --table-header-bg: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            --table-row-even: #fdfdfd;
+            --table-row-hover: #f8f9fa;
+        }
+
+               body.dark-mode {
+            --bg-body: #1a1d21;
+            --bg-card: #25292e;
+            --bg-header: #25292e;
+            --bg-sidebar: linear-gradient(135deg, #1565C0, #0d47a1);
+            --text-primary: #e8eaed;
+            --text-secondary: #b0b3b8;
+            --border-color: #3a3f45;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --table-header-bg: linear-gradient(135deg, #2d3238, #353a40);
+            --table-row-even: #202428;
+            --table-row-hover: #2a2f35;
+        }
+
+        /* ====== ESTILOS GENERALES ====== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .container { display: flex; min-height: 100vh; }
+
+        /* ====== SIDEBAR ====== */
+        .sidebar { width: 200px; background: var(--bg-sidebar); color: white; position: fixed; height: 100vh; overflow-y: auto; transition: transform 0.3s ease; z-index: 1000; }
+        .sidebar-header { padding: 20px; background: rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar-header h2 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .sidebar-header .icon { font-size: 20px; }
+        .user-info { padding: 15px 20px; background: rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.1); font-size: 14px; }
+        .user-info .user-name { font-weight: 600; margin-bottom: 5px; }
+        .user-info .user-role { opacity: 0.8; font-size: 12px; }
+        .sidebar-menu { padding: 20px 0; }
+        .menu-item { display: flex; align-items: center; padding: 12px 20px; color: rgba(255, 255, 255, 0.9); text-decoration: none; transition: all 0.3s ease; cursor: pointer; border: none; background: none; width: 100%; text-align: left; font-size: 14px; font-family: inherit; }
+        .menu-item:hover { background: rgba(255, 255, 255, 0.1); color: white; padding-left: 25px; }
+        .menu-item.active { background: rgba(255, 255, 255, 0.2); color: white; border-right: 3px solid white; }
+        .menu-item .icon { margin-right: 10px; width: 20px; font-size: 16px; }
+
+        /* ====== MAIN CONTENT ====== */
+        .main-content { flex: 1; margin-left: 200px; background-color: var(--bg-body); min-height: 100vh; transition: margin-left 0.3s ease, background-color 0.3s ease; }
+        .main-header { background: var(--bg-header); padding: 20px 30px; box-shadow: 0 2px 10px var(--shadow-color); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s ease; }
+        .main-header h1 { color: var(--text-primary); font-size: 24px; font-weight: 600; }
+        .header-actions { display: flex; gap: 15px; align-items: center; }
+        .user-badge { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 500; }
+        .content-area { padding: 30px; }
+
+        /* ====== BOTÓN MODO OSCURO ====== */
+        .dark-mode-toggle {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .dark-mode-toggle:hover {
+            background: rgba(33, 150, 243, 0.1);
+            border-color: #2196F3;
+        }
+
+        /* ====== TABLAS (para que hereden las variables) ====== */
+        table { background-color: var(--bg-card) !important; color: var(--text-primary) !important; }
+        th { background: var(--table-header-bg) !important; color: var(--text-primary) !important; border-bottom: 2px solid var(--border-color) !important; }
+        td { color: var(--text-primary) !important; border-bottom: 1px solid var(--border-color) !important; }
+        tr:hover { background-color: var(--table-row-hover) !important; }
+        tr:nth-child(even) { background-color: var(--table-row-even) !important; }
+
+        /* ====== CARDS / CONTENEDORES ====== */
+        .table-container, .form-container, .welcome-section, .gestion-section, .access-denied, .results-section, .search-section {
+            background-color: var(--bg-card) !important;
+            color: var(--text-primary) !important;
+            transition: background-color 0.3s ease;
+        }
+        .stats-section { background: linear-gradient(135deg, #e8f5e8, #d4edda) !important; }
+        body.dark-mode .stats-section { background: linear-gradient(135deg, #1b3a1e, #223d24) !important; color: #a5d6a7 !important; }
+        body.dark-mode .stats-text { color: #a5d6a7 !important; }
+
+        /* ====== INPUTS / SELECTS ====== */
+        input, select, textarea {
+            background-color: var(--bg-card) !important;
+            color: var(--text-primary) !important;
+            border-color: var(--border-color) !important;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #2196F3 !important;
+        }
+        label { color: var(--text-primary) !important; }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .main-header { padding: 20px 20px 20px 60px; flex-direction: column; gap: 15px; }
+            .content-area { padding: 20px; }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2><span class="icon">📊</span> Info Ventas</h2>
+            </div>
+            <div class="user-info">
+                <div class="user-name">👤 {{ user.get_full_name|default:user.username }}</div>
+                <div class="user-role">
+                    {% if user.is_superuser %}🔐 Administrador{% else %}👥 Usuario{% endif %}
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                <a href="{% url 'home' %}" class="menu-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                    <span class="icon">🏠</span> Inicio
+                </a>
+                <a href="{% url 'home' %}#clientes" class="menu-item">
+                    <span class="icon">👥</span> Clientes
+                </a>
+                <a href="{% url 'home' %}#productos" class="menu-item">
+                    <span class="icon">📦</span> Productos
+                </a>
+                <a href="{% url 'home' %}#ventas" class="menu-item">
+                    <span class="icon">💰</span> Ventas
+                </a>
+                <a href="{% url 'logout' %}" class="menu-item" style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                    <span class="icon">🚪</span> Cerrar Sesión
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <h1>{% block page_title %}Sistema de Gestión{% endblock %}</h1>
+                <div class="header-actions">
+                    <button class="dark-mode-toggle" onclick="toggleDarkMode()" id="darkModeBtn" title="Cambiar tema">
+                        <span id="darkModeIcon">🌙</span>
+                    </button>
+                    <div class="user-badge">{{ user.username }}</div>
+                </div>
+            </header>
+            <div class="content-area">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ========== MODO OSCURO ==========
+        function toggleDarkMode() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+
+            const isDark = body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+
+            // Actualizar el icono
+            document.getElementById('darkModeIcon').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        // Cargar preferencia al iniciar
+        (function() {
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'enabled') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeIcon').textContent = '☀️';
+            }
+        })();
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

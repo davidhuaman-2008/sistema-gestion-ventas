@@ -1,246 +1,149 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actualizar Venta Simple</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e0e0e0;
-        }
-        .header-section h1 {
-            margin: 0;
-            color: #333;
-        }
-        .btn-exit {
-            background-color: #9E9E9E;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn-exit:hover {
-            background-color: #757575;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-        button {
-            background-color: #FF9800;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #F57C00;
-        }
-        .error {
-            color: red;
-            font-size: 0.9em;
-        }
-        .success-message {
-            color: green;
-            margin: 10px 0;
-            padding: 10px;
-            background-color: #e8f5e8;
-            border-radius: 4px;
-            text-align: center;
-        }
-        .calculation-section {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 6px;
-            margin: 20px 0;
-            border-left: 4px solid #FF9800;
-        }
-        .calculation-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #eee;
-        }
-        .calculation-row:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-        .calculation-label {
-            font-weight: bold;
-        }
-        .calculation-value {
-            font-weight: bold;
-            color: #FF9800;
-        }
-        .total-value {
-            font-size: 18px;
-            color: #F57C00;
-        }
-        .price-info {
-            background-color: #fff3e0;
-            padding: 8px;
-            border-radius: 4px;
-            margin-top: 5px;
-            font-size: 14px;
-        }
-        .venta-info {
-            background-color: #e3f2fd;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-        .venta-info p {
-            margin: 5px 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header-section">
-            <h1>Actualizar Venta Simple</h1>
-            <a href="{% url 'lista_ventas_simples' %}" class="btn-exit">Salir</a>
-        </div>
-        
-        <div class="venta-info">
-            <p><strong>Código de Venta:</strong> {{ venta.cod_venta }}</p>
-            <p><strong>Fecha de Venta:</strong> {{ venta.fecha_venta|date:"d/m/Y H:i" }}</p>
-            <p><strong>Estado:</strong> {% if venta.anulado %}ANULADA{% else %}ACTIVA{% endif %}</p>
-        </div>
-        
-        {% if messages %}
-            {% for message in messages %}
-                <div class="success-message">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
+{% extends 'venta/base.html' %}
 
-        <form method="post" id="ventaForm">
-            {% csrf_token %}
-            
-            <div class="form-group">
-                {{ form.cliente.label_tag }}
-                {{ form.cliente }}
-                {% if form.cliente.errors %}
-                    <div class="error">{{ form.cliente.errors }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                {{ form.producto.label_tag }}
-                {{ form.producto }}
-                {% if form.producto.errors %}
-                    <div class="error">{{ form.producto.errors }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                {{ form.cantidad.label_tag }}
-                {{ form.cantidad }}
-                {% if form.cantidad.errors %}
-                    <div class="error">{{ form.cantidad.errors }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                <label for="id_precio_unitario">Precio Unitario:</label>
-                <input type="number" id="id_precio_unitario" value="{{ venta.precio_unitario }}" step="0.01" readonly>
-                <div class="price-info">El precio se cargará automáticamente al seleccionar el producto</div>
-            </div>
-            
-            <div class="calculation-section">
-                <div class="calculation-row">
-                    <span class="calculation-label">Subtotal:</span>
-                    <span class="calculation-value" id="subtotal">S/. {{ venta.subtotal }}</span>
-                </div>
-                <div class="calculation-row">
-                    <span class="calculation-label">IGV (18%):</span>
-                    <span class="calculation-value" id="igv">S/. {{ venta.igv }}</span>
-                </div>
-                <div class="calculation-row">
-                    <span class="calculation-label">Total:</span>
-                    <span class="calculation-value total-value" id="total">S/. {{ venta.total }}</span>
-                </div>
-            </div>
-            
-            <button type="submit">Actualizar Venta</button>
-        </form>
+{% block title %}Actualizar Venta Simple - Info Ventas{% endblock %}
+{% block page_title %}Actualizar Venta Simple{% endblock %}
+
+{% block extra_css %}
+<style>
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+    .btn-back { background-color: #9E9E9E; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none; font-weight: bold; display: inline-block; }
+    .btn-back:hover { background-color: #757575; }
+    .form-container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 700px; margin: 0 auto; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #e1e5e9; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: #FF9800; box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1); }
+    .form-group input[readonly] { background-color: #f5f5f5; cursor: not-allowed; }
+    .btn-submit { background: linear-gradient(135deg, #FF9800, #F57C00); color: white; padding: 14px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3); }
+    .error { color: #f44336; font-size: 0.9em; margin-top: 5px; }
+    .success { color: #4CAF50; padding: 12px; background: #e8f5e8; border-radius: 8px; margin-bottom: 15px; }
+    .venta-info { background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #2196F3; }
+    .venta-info p { margin: 5px 0; }
+    .calculation-section { background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #FF9800; }
+    .calculation-row { display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+    .calculation-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .calculation-label { font-weight: bold; }
+    .calculation-value { font-weight: bold; color: #FF9800; }
+    .total-value { font-size: 18px; color: #F57C00; }
+    .price-info { background: #fff3e0; padding: 8px; border-radius: 4px; margin-top: 5px; font-size: 14px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="top-bar">
+    <a href="{% url 'buscar_venta_modificar' %}" class="btn-back">← Volver a la Búsqueda</a>
+</div>
+
+<div class="form-container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="venta-info">
+        <p><strong>Código de Venta:</strong> {{ venta.cod_venta }}</p>
+        <p><strong>Fecha de Venta:</strong> {{ venta.fecha_venta|date:"d/m/Y H:i" }}</p>
+        <p><strong>Estado:</strong> {% if venta.anulado %}❌ ANULADA{% else %}✅ ACTIVA{% endif %}</p>
     </div>
 
-    <script>
-        // Cargar precio unitario al seleccionar producto
-        document.getElementById('id_producto').addEventListener('change', function() {
-            const productoId = this.value;
-            if (productoId) {
-                fetch(`/get_product_price/${productoId}/`)
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('id_precio_unitario').value = data.precio;
-                        calcularTotales();
-                    });
-            } else {
-                document.getElementById('id_precio_unitario').value = '';
-                calcularTotales();
-            }
-        });
-        
-        // Calcular totales cuando cambia la cantidad
-        document.getElementById('id_cantidad').addEventListener('input', calcularTotales);
-        
-        function calcularTotales() {
-            const cantidad = parseFloat(document.getElementById('id_cantidad').value) || 0;
-            const precioUnitario = parseFloat(document.getElementById('id_precio_unitario').value) || 0;
-            
-            const subtotal = cantidad * precioUnitario;
-            const igv = subtotal * 0.18;
-            const total = subtotal + igv;
-            
-            document.getElementById('subtotal').textContent = `S/. ${subtotal.toFixed(2)}`;
-            document.getElementById('igv').textContent = `S/. ${igv.toFixed(2)}`;
-            document.getElementById('total').textContent = `S/. ${total.toFixed(2)}`;
+    <form method="post" id="ventaForm">
+        {% csrf_token %}
+
+        <div class="form-group">
+            {{ form.cliente.label_tag }}
+            {{ form.cliente }}
+            {% if form.cliente.errors %}<div class="error">{{ form.cliente.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.producto.label_tag }}
+            {{ form.producto }}
+            {% if form.producto.errors %}<div class="error">{{ form.producto.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.cantidad.label_tag }}
+            {{ form.cantidad }}
+            {% if form.cantidad.errors %}<div class="error">{{ form.cantidad.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_precio_unitario">Precio Unitario:</label>
+            <input type="number" id="id_precio_unitario" value="{{ venta.precio_unitario }}" step="0.01" readonly>
+            <div class="price-info">El precio se carga automáticamente al seleccionar el producto</div>
+        </div>
+
+        <div class="calculation-section">
+            <div class="calculation-row">
+                <span class="calculation-label">Subtotal:</span>
+                <span class="calculation-value" id="subtotal">S/. {{ venta.subtotal }}</span>
+            </div>
+            <div class="calculation-row">
+                <span class="calculation-label">IGV (18%):</span>
+                <span class="calculation-value" id="igv">S/. {{ venta.igv }}</span>
+            </div>
+            <div class="calculation-row">
+                <span class="calculation-label">Total:</span>
+                <span class="calculation-value total-value" id="total">S/. {{ venta.total }}</span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">💾 Actualizar Venta</button>
+    </form>
+</div>
+
+{% block extra_js %}
+<script>
+    const productoSelect = document.getElementById('id_producto');
+    const cantidadInput = document.getElementById('id_cantidad');
+    const precioInput = document.getElementById('id_precio_unitario');
+
+    // Función para cargar el precio desde el backend
+    function cargarPrecio() {
+        const productoId = productoSelect.value;
+        if (productoId) {
+            fetch(`/get_product_price/${productoId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    precioInput.value = data.precio;
+                    calcularTotales();
+                })
+                .catch(error => console.error('Error cargando precio:', error));
+        } else {
+            precioInput.value = '';
+            calcularTotales();
         }
-        
-        // Calcular al cargar la página
-        window.addEventListener('DOMContentLoaded', calcularTotales);
-    </script>
-</body>
-</html>
+    }
+
+    // Calcular los totales
+    function calcularTotales() {
+        const cantidad = parseFloat(cantidadInput.value) || 0;
+        const precioUnitario = parseFloat(precioInput.value) || 0;
+
+        const subtotal = cantidad * precioUnitario;
+        const igv = subtotal * 0.18;
+        const total = subtotal + igv;
+
+        document.getElementById('subtotal').textContent = `S/. ${subtotal.toFixed(2)}`;
+        document.getElementById('igv').textContent = `S/. ${igv.toFixed(2)}`;
+        document.getElementById('total').textContent = `S/. ${total.toFixed(2)}`;
+    }
+
+    // Eventos
+    productoSelect.addEventListener('change', cargarPrecio);
+    cantidadInput.addEventListener('input', calcularTotales);
+
+    // Cargar precio al inicio
+    window.addEventListener('DOMContentLoaded', function() {
+        // Solo cargar si el precio está vacío o es 0
+        if (!precioInput.value || precioInput.value === '0' || precioInput.value === '0.00') {
+            cargarPrecio();
+        } else {
+            calcularTotales();
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}
